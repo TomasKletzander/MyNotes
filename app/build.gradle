@@ -44,11 +44,18 @@ dependencies {
     implementation deps.roomRuntime
     kapt deps.roomCompiler
 
-    api deps.appcompat
-    api deps.constraintLayout
-    api deps.recyclerView
-    api deps.cardView
-    api deps.materialDesign
+    //  Retrofit
+    implementation deps.retrofit
+    implementation deps.retrofitGsonConverter
+
+    //  GSON
+    implementation deps.json
+
+    implementation deps.appcompat
+    implementation deps.constraintLayout
+    implementation deps.recyclerView
+    implementation deps.cardView
+    implementation deps.materialDesign
 
     testImplementation deps.junit
     testImplementation deps.mockitoInline
