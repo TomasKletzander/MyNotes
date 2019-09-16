@@ -38,6 +38,9 @@ dependencies {
 
     //  Architecture components
     implementation deps.archLifecycleExtensions
+    //implementation deps.archLifecycleRuntime
+    implementation deps.archLifecycleViewmodel
+    implementation deps.archLifecycleLivedata
     kapt deps.archLifecycleCompiler
 
     //  Room database
@@ -50,6 +53,9 @@ dependencies {
 
     //  GSON
     implementation deps.json
+
+    //  Coroutines
+    implementation deps.coroutines
 
     implementation deps.appcompat
     implementation deps.constraintLayout

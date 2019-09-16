@@ -3,7 +3,7 @@ def constraintLayoutVersion = '1.1.3'
 def recyclerViewVersion = '1.0.0'
 def cardViewVersion = '1.0.0'
 def daggerVersion = '2.20'
-def archLifecycleVersion = '1.1.1'
+def archVersion = '2.2.0-alpha01'
 def archCoreTestingVersion = '1.1.1'
 def mockitoVersion = '2.8.47'
 def mockitoKotlinVersion = '2.1.0'
@@ -24,8 +24,11 @@ ext.deps = [
     daggerAndroid:              "com.google.dagger:dagger-android-support:$daggerVersion",
     daggerCompiler:             "com.google.dagger:dagger-compiler:$daggerVersion",
     daggerAndroidProcessor:     "com.google.dagger:dagger-android-processor:$daggerVersion",
-    archLifecycleExtensions:    "android.arch.lifecycle:extensions:$archLifecycleVersion",
-    archLifecycleCompiler:      "android.arch.lifecycle:compiler:$archLifecycleVersion",
+    archLifecycleExtensions:    "androidx.lifecycle:lifecycle-extensions:$archVersion",
+    archLifecycleCompiler:      "androidx.lifecycle:lifecycle-compiler:$archVersion",
+    archLifecycleViewmodel:     "androidx.lifecycle:lifecycle-viewmodel-ktx:$archVersion",
+    archLifecycleRuntime:       "androidx.lifecycle:lifecycle-runtime-ktx:$archVersion",
+    archLifecycleLivedata:      "androidx.lifecycle:lifecycle-livedata-ktx:$archVersion",
     roomRuntime:                "android.arch.persistence.room:runtime:$roomVersion",
     roomCompiler:               "android.arch.persistence.room:compiler:$roomVersion",
     retrofit:                   "com.squareup.retrofit2:retrofit:$retrofitVersion",
