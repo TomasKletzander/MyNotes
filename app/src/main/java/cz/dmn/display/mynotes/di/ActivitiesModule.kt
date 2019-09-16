@@ -8,5 +8,6 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivitiesModule {
 
     @ContributesAndroidInjector(modules = [MainActivity.InjectionModule::class])
+    @PerActivity
     internal abstract fun contributeMainActivity(): MainActivity
 }
