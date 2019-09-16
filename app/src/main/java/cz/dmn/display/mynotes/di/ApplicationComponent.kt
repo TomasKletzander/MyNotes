@@ -7,4 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [ApplicationModule::class, ActivitiesModule::class])
-interface ApplicationComponent : AndroidInjector<MyNotesApplication>
+interface ApplicationComponent : AndroidInjector<MyNotesApplication> {
+
+    @Component.Builder
+    abstract class Builder : AndroidInjector.Builder<MyNotesApplication>()
+}

@@ -13,7 +13,7 @@ class MyNotesApplication : Application(), HasActivityInjector {
     internal lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
-        DaggerApplicationComponent.builder().build().inject(this)
+        DaggerApplicationComponent.builder().create(this).inject(this)
         super.onCreate()
     }
 
