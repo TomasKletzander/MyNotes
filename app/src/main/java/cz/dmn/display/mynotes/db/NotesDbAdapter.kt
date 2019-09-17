@@ -19,4 +19,6 @@ class NotesDbAdapter @Inject constructor(
     }
 
     fun addNote(note: NoteDbEntity) = database.notes.insert(note)
+
+    fun update(note: NoteDbEntity) = database.notes.update(note)
 }

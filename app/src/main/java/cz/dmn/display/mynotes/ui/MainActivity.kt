@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import cz.dmn.display.mynotes.R
 import cz.dmn.display.mynotes.databinding.ActivityMainBinding
@@ -16,7 +17,9 @@ import cz.dmn.display.mynotes.di.PerActivity
 import cz.dmn.display.mynotes.mvvm.NotesDataConverter
 import cz.dmn.display.mynotes.mvvm.NotesViewModel
 import cz.dmn.display.mynotes.navigator.Navigator
+import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
+import dagger.Binds
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -27,14 +30,18 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), NoteClickListener {
 
     companion object {
-        private const val REQUEST_NEW_NOTE = 100
+        private const val REQUEST_NOTE = 100
     }
 
     @Module(includes = [BaseActivity.InjectionModule::class])
     abstract class InjectionModule {
+
+        @Binds
+        @PerActivity
+        internal abstract fun bindNoteClickListener(activity: MainActivity): NoteClickListener
 
         @Module
         companion object {
@@ -94,16 +101,30 @@ class MainActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            REQUEST_NEW_NOTE -> {
+            REQUEST_NOTE -> {
                 if (resultCode == RESULT_OK && data != null) {
-                    insertNewNote(data.getStringExtra(EXTRA_NOTE_TEXT))
+                    if (data.getLongExtra(EXTRA_NOTE_ID, -1L) == -1L) {
+                        insertNewNote(data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
+                    } else {
+                        updateNote(data.getLongExtra(EXTRA_NOTE_ID, -1L), data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onNoteClick(id: Long) {
+        lifecycleScope.launch(Dispatchers.Default) {
+            viewModel.data.value?.find { it.id == id }?.let {
+                withContext(Dispatchers.Main) {
+                    navigator.navigateToNote(REQUEST_NOTE, id = it.id, text = it.text)
                 }
             }
         }
     }
 
     private fun addNote() {
-        navigator.navigateToNote(REQUEST_NEW_NOTE)
+        navigator.navigateToNote(REQUEST_NOTE)
     }
 
     private fun insertNewNote(text: String) {
@@ -112,6 +133,12 @@ class MainActivity : BaseActivity() {
                 viewModel.addNote(text)
             }
             scrollToEditingPosition = true
+        }
+    }
+
+    private fun updateNote(id: Long, text: String) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            viewModel.updateNote(id, text)
         }
     }
 }

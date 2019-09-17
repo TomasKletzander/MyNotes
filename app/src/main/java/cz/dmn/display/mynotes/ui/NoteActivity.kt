@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import cz.dmn.display.mynotes.R
 import cz.dmn.display.mynotes.databinding.ActivityNoteBinding
+import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
 import dagger.Module
 
@@ -19,8 +20,17 @@ class NoteActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note)
+        intent.getStringExtra(EXTRA_NOTE_TEXT)?.let {
+            binding.noteText.setText(it)
+        }
         binding.save.setOnClickListener {
-            setResult(RESULT_OK, Intent().putExtra(EXTRA_NOTE_TEXT, binding.noteText.text.toString()))
+            val response = Intent().putExtra(EXTRA_NOTE_TEXT, binding.noteText.text.toString())
+            intent.getLongExtra(EXTRA_NOTE_ID, -1L).let {
+                if (it != -1L) {
+                    response.putExtra(EXTRA_NOTE_ID, it)
+                }
+            }
+            setResult(RESULT_OK, response)
             finishAfterTransition()
         }
         binding.cancel.setOnClickListener {

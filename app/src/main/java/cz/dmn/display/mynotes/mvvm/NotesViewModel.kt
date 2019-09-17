@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import cz.dmn.display.mynotes.api.NotesApi
 import cz.dmn.display.mynotes.db.NoteDbEntity
 import cz.dmn.display.mynotes.db.NotesDbAdapter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class NotesViewModel @Inject constructor(
@@ -36,4 +38,10 @@ class NotesViewModel @Inject constructor(
     val status: LiveData<Status> = internalStatus
 
     fun addNote(text: String) = dbAdapter.addNote(NoteDbEntity(null, -1, text))
+
+    fun updateNote(id: Long, text: String) = viewModelScope.launch(Dispatchers.IO) {
+        data.value?.find { it.id == id }?.copy(text = text)?.let {
+            dbAdapter.update(it)
+        }
+    }
 }

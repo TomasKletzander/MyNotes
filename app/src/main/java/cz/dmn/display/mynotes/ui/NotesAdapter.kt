@@ -10,13 +10,16 @@ import javax.inject.Inject
 @PerActivity
 class NotesAdapter @Inject constructor(
     private val inflater: LayoutInflater,
-    private val recycler: RecyclerView
+    private val recycler: RecyclerView,
+    private val noteClickListener: NoteClickListener
 ) : RecyclerView.Adapter<NoteViewHolder>() {
 
     private val models = mutableListOf<NoteUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-        = NoteViewHolder(ItemNoteBinding.inflate(inflater, recycler, false))
+        = NoteViewHolder(ItemNoteBinding.inflate(inflater, recycler, false)).apply {
+        binding.root.setOnClickListener { noteClickListener.onNoteClick(id) }
+    }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) = holder.bind(models[position])
 
