@@ -1,4 +1,4 @@
-package cz.dmn.display.mynotes.ui
+package cz.dmn.display.mynotes.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +17,13 @@ class NotesAdapter @Inject constructor(
     private val models = mutableListOf<NoteUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-        = NoteViewHolder(ItemNoteBinding.inflate(inflater, recycler, false)).apply {
+        = NoteViewHolder(
+        ItemNoteBinding.inflate(
+            inflater,
+            recycler,
+            false
+        )
+    ).apply {
         binding.root.setOnClickListener { noteClickListener.onNoteClick(id) }
     }
 

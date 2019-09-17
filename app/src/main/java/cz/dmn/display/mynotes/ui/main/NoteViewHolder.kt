@@ -1,4 +1,4 @@
-package cz.dmn.display.mynotes.ui
+package cz.dmn.display.mynotes.ui.main
 
 import androidx.recyclerview.widget.RecyclerView
 import cz.dmn.display.mynotes.databinding.ItemNoteBinding

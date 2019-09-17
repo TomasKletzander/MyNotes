@@ -3,7 +3,7 @@ package cz.dmn.display.mynotes.navigator
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import cz.dmn.display.mynotes.di.PerActivity
-import cz.dmn.display.mynotes.ui.NoteActivity
+import cz.dmn.display.mynotes.ui.note.NoteActivity
 import javax.inject.Inject
 
 @PerActivity

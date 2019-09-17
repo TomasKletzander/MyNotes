@@ -1,7 +1,7 @@
 package cz.dmn.display.mynotes.di
 
-import cz.dmn.display.mynotes.ui.MainActivity
-import cz.dmn.display.mynotes.ui.NoteActivity
+import cz.dmn.display.mynotes.ui.main.MainActivity
+import cz.dmn.display.mynotes.ui.note.NoteActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

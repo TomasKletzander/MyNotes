@@ -1,4 +1,4 @@
-package cz.dmn.display.mynotes.ui
+package cz.dmn.display.mynotes.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +19,7 @@ import cz.dmn.display.mynotes.mvvm.NotesViewModel
 import cz.dmn.display.mynotes.navigator.Navigator
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
+import cz.dmn.display.mynotes.ui.BaseActivity
 import dagger.Binds
 import dagger.Lazy
 import dagger.Module
@@ -30,7 +31,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MainActivity : BaseActivity(), NoteClickListener {
+class MainActivity : BaseActivity(),
+    NoteClickListener {
 
     companion object {
         private const val REQUEST_NOTE = 100
@@ -88,7 +90,9 @@ class MainActivity : BaseActivity(), NoteClickListener {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.synchronize()
         }
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(viewModelProvider)).get(NotesViewModel::class.java)
+        viewModel = ViewModelProviders.of(this,
+            ViewModelFactory(viewModelProvider)
+        ).get(NotesViewModel::class.java)
         viewModel.data.observe(this, Observer<List<NoteDbEntity>> {
             notesAdapter.updateModels(it.map { dbEntity -> notesDataConverter.toUiModel(dbEntity) })
             notesAdapter.notifyDataSetChanged()

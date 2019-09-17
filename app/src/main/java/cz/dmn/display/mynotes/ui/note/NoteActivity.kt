@@ -1,4 +1,4 @@
-package cz.dmn.display.mynotes.ui
+package cz.dmn.display.mynotes.ui.note
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,7 @@ import cz.dmn.display.mynotes.R
 import cz.dmn.display.mynotes.databinding.ActivityNoteBinding
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
+import cz.dmn.display.mynotes.ui.BaseActivity
 import dagger.Module
 
 class NoteActivity : BaseActivity() {

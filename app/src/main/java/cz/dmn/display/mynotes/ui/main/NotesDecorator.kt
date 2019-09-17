@@ -1,4 +1,4 @@
-package cz.dmn.display.mynotes.ui
+package cz.dmn.display.mynotes.ui.main
 
 import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
