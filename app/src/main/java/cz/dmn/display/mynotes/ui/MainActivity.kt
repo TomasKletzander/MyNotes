@@ -87,6 +87,9 @@ class MainActivity : BaseActivity(), NoteClickListener {
         binding.notes.adapter = notesAdapter
         binding.notes.addItemDecoration(notesDecorator)
         binding.fab.setOnClickListener { addNote() }
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refreshFromBackend()
+        }
         viewModel = ViewModelProviders.of(this, ViewModelFactory(viewModelProvider)).get(NotesViewModel::class.java)
         viewModel.data.observe(this, Observer<List<NoteDbEntity>> {
             notesAdapter.updateModels(it.map { dbEntity -> notesDataConverter.toUiModel(dbEntity) })
@@ -95,6 +98,12 @@ class MainActivity : BaseActivity(), NoteClickListener {
                 val index = notesAdapter.findPositionOfId(editingNoteId)
                 binding.notes.smoothScrollToPosition(index)
                 scrollToEditingPosition = false
+            }
+        })
+        viewModel.status.observe(this, Observer<NotesViewModel.Status> {
+            when (it) {
+                NotesViewModel.Status.Loading -> binding.swipeRefresh.isRefreshing = true
+                else -> binding.swipeRefresh.isRefreshing = false
             }
         })
     }

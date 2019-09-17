@@ -23,15 +23,9 @@ class NotesViewModel @Inject constructor(
         Error
     }
 
-    val data = liveData(Dispatchers.IO) {
-        internalStatus.postValue(Status.Loading)
+    val data = liveData(Dispatchers.Main) {
         emitSource(dbAdapter.data)
-        try {
-            dbAdapter.updateData(api.getNotes())
-            internalStatus.postValue(Status.Success)
-        } catch (e: Throwable) {
-            internalStatus.postValue(Status.Error)
-        }
+        refreshFromBackend()
     }
 
     private val internalStatus = MutableLiveData<Status>()
@@ -42,6 +36,16 @@ class NotesViewModel @Inject constructor(
     fun updateNote(id: Long, text: String) = viewModelScope.launch(Dispatchers.IO) {
         data.value?.find { it.id == id }?.copy(text = text)?.let {
             dbAdapter.update(it)
+        }
+    }
+
+    fun refreshFromBackend() = viewModelScope.launch(Dispatchers.IO) {
+        internalStatus.postValue(Status.Loading)
+        try {
+            dbAdapter.updateData(api.getNotes())
+            internalStatus.postValue(Status.Success)
+        } catch (e: Throwable) {
+            internalStatus.postValue(Status.Error)
         }
     }
 }
