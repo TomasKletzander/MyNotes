@@ -8,19 +8,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/max_note_height"
-        android:padding="@dimen/margin_huge"
+        android:padding="@dimen/margin_tiny"
         android:background="@color/white">
 
         <EditText
             android:id="@+id/note_text"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/save"
             android:gravity="top"
-            android:inputType="textMultiLine">
+            android:inputType="textMultiLine"
+            android:hint="@string/note_hint"
+            style="@style/NoteText">
 
         </EditText>
 

@@ -2,4 +2,5 @@
     <string name="app_name">My Notes</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="note_hint">Enter note, separate title with newline.</string>
 </resources>

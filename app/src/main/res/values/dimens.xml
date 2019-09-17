@@ -7,4 +7,6 @@
     <dimen name="margin_huge">32dp</dimen>
 
     <dimen name="max_note_height">300dp</dimen>
+    <dimen name="note_title_size">18sp</dimen>
+    <dimen name="note_text_size">14sp</dimen>
 </resources>

@@ -14,7 +14,7 @@ class NotesDecorator @Inject constructor(
     notesAdapterLazy: Lazy<NotesAdapter>
 ) : RecyclerView.ItemDecoration() {
 
-    private val margin = activity.resources.getDimensionPixelSize(R.dimen.margin_huge)
+    private val margin = activity.resources.getDimensionPixelSize(R.dimen.margin_large)
     private val notesAdapter by lazy(LazyThreadSafetyMode.NONE) { notesAdapterLazy.get() }
 
     override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
