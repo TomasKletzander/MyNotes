@@ -24,10 +24,7 @@ class NotesViewModel @Inject constructor(
         Error
     }
 
-    val data: LiveData<List<NoteDbEntity>> = liveData(Dispatchers.Main) {
-        emitSource(dbAdapter.data)
-        synchronize()
-    }
+    val data = dbAdapter.data
 
     private val internalStatus = MutableLiveData<Status>()
     val status: LiveData<Status> = internalStatus
@@ -45,7 +42,6 @@ class NotesViewModel @Inject constructor(
     fun removeNoteById(id: Long) = viewModelScope.launch(Dispatchers.IO) {
         dbAdapter.getNoteImmediately(id)?.let {
             dbAdapter.delete(it)
-            //synchronize()
         }
     }
 

@@ -86,6 +86,7 @@ class MainActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
         binding.notes.adapter = notesAdapter
@@ -95,6 +96,7 @@ class MainActivity : BaseActivity(),
             viewModel.synchronize()
         }
         ItemTouchHelper(swipeToDeleteHandler).attachToRecyclerView(binding.notes)
+
         viewModel = ViewModelProviders.of(this,
             ViewModelFactory(viewModelProvider)
         ).get(NotesViewModel::class.java)
@@ -108,6 +110,9 @@ class MainActivity : BaseActivity(),
                 else -> binding.swipeRefresh.isRefreshing = false
             }
         })
+        if (savedInstanceState == null) {
+            viewModel.synchronize()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
