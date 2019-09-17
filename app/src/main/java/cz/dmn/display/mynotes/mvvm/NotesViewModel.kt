@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 class NotesViewModel @Inject constructor(
     private val dbAdapter: NotesDbAdapter,
-    private val api: NotesApi
+    private val api: NotesApi,
+    private val notesDataConverter: NotesDataConverter
 ) : ViewModel() {
 
     enum class Status {
@@ -23,26 +24,57 @@ class NotesViewModel @Inject constructor(
         Error
     }
 
-    val data = liveData(Dispatchers.Main) {
+    val data: LiveData<List<NoteDbEntity>> = liveData(Dispatchers.Main) {
         emitSource(dbAdapter.data)
-        refreshFromBackend()
+        synchronize()
     }
 
     private val internalStatus = MutableLiveData<Status>()
     val status: LiveData<Status> = internalStatus
 
-    fun addNote(text: String) = dbAdapter.addNote(NoteDbEntity(null, -1, text))
+    fun addNote(text: String) = viewModelScope.launch(Dispatchers.Main) {
+        dbAdapter.addNote(NoteDbEntity(null, -1, text))
+    }
 
     fun updateNote(id: Long, text: String) = viewModelScope.launch(Dispatchers.IO) {
-        data.value?.find { it.id == id }?.copy(text = text)?.let {
+        data.value?.find { it.id == id }?.copy(text = text, dirty = true)?.let {
             dbAdapter.update(it)
         }
     }
 
-    fun refreshFromBackend() = viewModelScope.launch(Dispatchers.IO) {
-        internalStatus.postValue(Status.Loading)
+    fun synchronize() = viewModelScope.launch(Dispatchers.IO) {
         try {
-            dbAdapter.updateData(api.getNotes())
+            internalStatus.postValue(Status.Loading)
+
+            //  Save all notes to be processed
+            val allNotes = mutableListOf<NoteDbEntity>()
+            this@NotesViewModel.data.value?.let { allNotes.addAll(it) }
+
+            //  Send new notes
+            val newNotes = allNotes.filter { it.serverId < 0L }
+            newNotes.forEach {
+                val apiData = api.insertNote(notesDataConverter.toApiModel(it))
+                dbAdapter.update(it.copy(serverId = apiData.id))
+            }
+            allNotes.removeAll(newNotes)
+
+            //  Send dirty notes
+            val dirtyNotes = allNotes.filter { it.dirty }
+            dirtyNotes.forEach {
+                api.updateNote(it.serverId, notesDataConverter.toApiModel(it))
+                dbAdapter.update(it.copy(dirty = false))
+            }
+            allNotes.removeAll(dirtyNotes)
+
+            //  Delete removed notes
+
+            //  Process server notes
+            val apiNotes = api.getNotes()
+            apiNotes.forEach { apiNote ->
+                if ((this@NotesViewModel.data.value?.find { it.serverId == apiNote.id }) == null) {
+                    dbAdapter.addNote(notesDataConverter.toDbEntity(apiNote))
+                }
+            }
             internalStatus.postValue(Status.Success)
         } catch (e: Throwable) {
             internalStatus.postValue(Status.Error)

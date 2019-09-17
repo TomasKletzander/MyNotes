@@ -76,8 +76,6 @@ class MainActivity : BaseActivity(), NoteClickListener {
     @Inject internal lateinit var navigator: Navigator
     @Inject internal lateinit var notesDataConverter: NotesDataConverter
     private val notesAdapter by lazy(LazyThreadSafetyMode.NONE) { notesAdapterLazy.get() }
-    private var editingNoteId = -1L
-    private var scrollToEditingPosition = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -88,17 +86,12 @@ class MainActivity : BaseActivity(), NoteClickListener {
         binding.notes.addItemDecoration(notesDecorator)
         binding.fab.setOnClickListener { addNote() }
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshFromBackend()
+            viewModel.synchronize()
         }
         viewModel = ViewModelProviders.of(this, ViewModelFactory(viewModelProvider)).get(NotesViewModel::class.java)
         viewModel.data.observe(this, Observer<List<NoteDbEntity>> {
             notesAdapter.updateModels(it.map { dbEntity -> notesDataConverter.toUiModel(dbEntity) })
             notesAdapter.notifyDataSetChanged()
-            if (editingNoteId >= 0 && scrollToEditingPosition) {
-                val index = notesAdapter.findPositionOfId(editingNoteId)
-                binding.notes.smoothScrollToPosition(index)
-                scrollToEditingPosition = false
-            }
         })
         viewModel.status.observe(this, Observer<NotesViewModel.Status> {
             when (it) {
@@ -137,12 +130,7 @@ class MainActivity : BaseActivity(), NoteClickListener {
     }
 
     private fun insertNewNote(text: String) {
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
-            editingNoteId = withContext(Dispatchers.IO) {
-                viewModel.addNote(text)
-            }
-            scrollToEditingPosition = true
-        }
+        viewModel.addNote(text)
     }
 
     private fun updateNote(id: Long, text: String) {

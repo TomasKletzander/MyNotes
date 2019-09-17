@@ -58,4 +58,12 @@ class NotesDataConverterTest {
         val uiModel = notesDataConverter.toUiModel(dbEntity)
         uiModel.id shouldEqual -1L
     }
+
+    @Test
+    fun toApiModel() {
+        val dbEntity = NoteDbEntity(null, SERVER_ID, NOTE_CONTENT)
+        val apiModel = notesDataConverter.toApiModel(dbEntity)
+        apiModel.id shouldEqual SERVER_ID
+        apiModel.title shouldEqual NOTE_CONTENT
+    }
 }

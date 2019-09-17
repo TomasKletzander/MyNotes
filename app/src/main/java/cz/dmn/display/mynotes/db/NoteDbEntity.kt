@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class NoteDbEntity (
     @PrimaryKey(autoGenerate = true) val id: Long?,
     val serverId: Long,
-    val text: String
+    val text: String,
+    val dirty: Boolean = false
 )

@@ -45,6 +45,7 @@ dependencies {
 
     //  Room database
     implementation deps.roomRuntime
+    implementation deps.roomKtx
     kapt deps.roomCompiler
 
     //  Retrofit
