@@ -5,14 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cz.dmn.display.mynotes.databinding.ItemNoteBinding
 import cz.dmn.display.mynotes.di.PerActivity
+import dagger.Lazy
 import javax.inject.Inject
 
 @PerActivity
 class NotesAdapter @Inject constructor(
     private val inflater: LayoutInflater,
-    private val recycler: RecyclerView,
+    private val recyclerLazy: Lazy<RecyclerView>,
     private val noteClickListener: NoteClickListener
 ) : RecyclerView.Adapter<NoteViewHolder>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     private val models = mutableListOf<NoteUiModel>()
 
@@ -20,7 +25,7 @@ class NotesAdapter @Inject constructor(
         = NoteViewHolder(
         ItemNoteBinding.inflate(
             inflater,
-            recycler,
+            recyclerLazy.get(),
             false
         )
     ).apply {
@@ -31,10 +36,17 @@ class NotesAdapter @Inject constructor(
 
     override fun getItemCount() = models.size
 
+    override fun getItemId(position: Int) = models[position].id
+
     fun updateModels(models: List<NoteUiModel>) {
         this.models.clear()
         this.models.addAll(models)
     }
 
-    fun findPositionOfId(id: Long) = models.indexOfFirst { it.id == id }
+    operator fun get(index: Int) = models[index]
+
+    fun removeModelAt(index: Int) {
+        models.removeAt(index)
+        notifyItemRemoved(index)
+    }
 }

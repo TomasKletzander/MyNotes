@@ -36,9 +36,16 @@ class NotesViewModel @Inject constructor(
         dbAdapter.addNote(NoteDbEntity(null, -1, text))
     }
 
-    fun updateNote(id: Long, text: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateNote(id: Long, text: String) = viewModelScope.launch(Dispatchers.Main) {
         data.value?.find { it.id == id }?.copy(text = text, dirty = true)?.let {
             dbAdapter.update(it)
+        }
+    }
+
+    fun removeNoteById(id: Long) = viewModelScope.launch(Dispatchers.IO) {
+        dbAdapter.getNoteImmediately(id)?.let {
+            dbAdapter.delete(it)
+            //synchronize()
         }
     }
 

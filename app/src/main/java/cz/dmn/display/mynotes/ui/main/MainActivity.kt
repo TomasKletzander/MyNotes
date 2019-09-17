@@ -1,5 +1,6 @@
 package cz.dmn.display.mynotes.ui.main
 
+import android.animation.LayoutTransition
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import cz.dmn.display.mynotes.R
 import cz.dmn.display.mynotes.databinding.ActivityMainBinding
 import cz.dmn.display.mynotes.db.NoteDbEntity
@@ -77,6 +80,7 @@ class MainActivity : BaseActivity(),
     @Inject internal lateinit var notesAdapterLazy: Lazy<NotesAdapter>
     @Inject internal lateinit var navigator: Navigator
     @Inject internal lateinit var notesDataConverter: NotesDataConverter
+    @Inject internal lateinit var swipeToDeleteHandler: SwipeToDeleteHandler
     private val notesAdapter by lazy(LazyThreadSafetyMode.NONE) { notesAdapterLazy.get() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +94,7 @@ class MainActivity : BaseActivity(),
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.synchronize()
         }
+        ItemTouchHelper(swipeToDeleteHandler).attachToRecyclerView(binding.notes)
         viewModel = ViewModelProviders.of(this,
             ViewModelFactory(viewModelProvider)
         ).get(NotesViewModel::class.java)

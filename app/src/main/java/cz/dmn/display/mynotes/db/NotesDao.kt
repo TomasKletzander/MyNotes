@@ -16,6 +16,9 @@ interface NotesDao {
     @Query("delete from notes")
     suspend fun deleteAll(): Int
 
+    @Delete
+    suspend fun delete(note: NoteDbEntity)
+
     @Insert
     suspend fun insert(data: List<NoteDbEntity>)
 
@@ -24,4 +27,7 @@ interface NotesDao {
 
     @Update
     suspend fun update(note: NoteDbEntity)
+
+    @Query("select * from notes where id=:id")
+    suspend fun queryNoteImmediately(id: Long): NoteDbEntity?
 }
