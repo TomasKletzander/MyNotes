@@ -9,7 +9,7 @@ class NotesDbAdapter @Inject constructor(private val database: NotesDatabase) {
 
     val data = database.notes.queryAll()
 
-    suspend fun updateData(data: List<NoteApiModel>) {
+    fun updateData(data: List<NoteApiModel>) {
         database.notes.deleteAll()
         database.notes.insert(data.map { NoteDbEntity(null, it.id, it.title) })
     }

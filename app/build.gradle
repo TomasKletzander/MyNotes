@@ -38,7 +38,7 @@ dependencies {
 
     //  Architecture components
     implementation deps.archLifecycleExtensions
-    //implementation deps.archLifecycleRuntime
+    implementation deps.archLifecycleRuntime
     implementation deps.archLifecycleViewmodel
     implementation deps.archLifecycleLivedata
     kapt deps.archLifecycleCompiler
