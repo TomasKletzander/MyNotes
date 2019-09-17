@@ -26,4 +26,6 @@ class NotesAdapter @Inject constructor(
         this.models.clear()
         this.models.addAll(models)
     }
+
+    fun findPositionOfId(id: Long) = models.indexOfFirst { it.id == id }
 }

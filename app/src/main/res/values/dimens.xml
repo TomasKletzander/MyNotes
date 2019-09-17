@@ -5,4 +5,6 @@
     <dimen name="margin_medium">8dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_huge">32dp</dimen>
+
+    <dimen name="max_note_height">300dp</dimen>
 </resources>

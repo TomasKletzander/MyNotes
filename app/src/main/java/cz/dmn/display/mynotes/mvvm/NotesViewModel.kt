@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import cz.dmn.display.mynotes.api.NotesApi
+import cz.dmn.display.mynotes.db.NoteDbEntity
 import cz.dmn.display.mynotes.db.NotesDbAdapter
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -33,4 +34,6 @@ class NotesViewModel @Inject constructor(
 
     private val internalStatus = MutableLiveData<Status>()
     val status: LiveData<Status> = internalStatus
+
+    fun addNote(text: String) = dbAdapter.addNote(NoteDbEntity(null, -1, text))
 }

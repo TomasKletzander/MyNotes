@@ -16,4 +16,7 @@ interface NotesDao {
 
     @Insert
     fun insert(data: List<NoteDbEntity>)
+
+    @Insert
+    fun insert(note: NoteDbEntity): Long
 }
