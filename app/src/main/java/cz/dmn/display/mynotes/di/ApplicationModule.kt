@@ -27,7 +27,7 @@ abstract class ApplicationModule {
         @JvmStatic
         @Singleton
         internal fun provideNotesApi() = Retrofit.Builder()
-            .baseUrl("http://private-anon-a6bbcc58f3-note10.apiary-mock.com/")
+            .baseUrl("https://private-anon-a6bbcc58f3-note10.apiary-mock.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(NotesApi::class.java)

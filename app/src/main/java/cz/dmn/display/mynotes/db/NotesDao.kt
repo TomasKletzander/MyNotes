@@ -11,7 +11,7 @@ import androidx.room.Update
 interface NotesDao {
 
     @Query("select * from notes")
-    fun queryAll(): LiveData<List<NoteDbEntity>>
+    fun allLive(): LiveData<List<NoteDbEntity>>
 
     @Query("delete from notes")
     suspend fun deleteAll(): Int
@@ -29,5 +29,5 @@ interface NotesDao {
     suspend fun update(note: NoteDbEntity)
 
     @Query("select * from notes where id=:id")
-    suspend fun queryNoteImmediately(id: Long): NoteDbEntity?
+    suspend fun get(id: Long): NoteDbEntity?
 }
