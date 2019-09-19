@@ -23,9 +23,6 @@ interface NotesDao {
     suspend fun delete(note: NoteDbEntity)
 
     @Insert
-    suspend fun insert(data: List<NoteDbEntity>)
-
-    @Insert
     suspend fun insert(note: NoteDbEntity): Long
 
     @Update

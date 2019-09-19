@@ -32,26 +32,36 @@ class NotesSynchronizer @Inject constructor(
         withContext(coroutineContextProvider.Default) {
 
             //  Insert to database all API notes not existing in database already
-            dbInsert.addAll(apiNotes.filterNot { apiNote ->
+            apiNotes.filterNot { apiNote ->
                 dbNotes.any { dbNote -> dbNote.serverId == apiNote.id }
-            }.map { notesDataConverter.toDbEntity(it) })
+            }.mapTo(dbInsert) {
+                notesDataConverter.toDbEntity(it)
+            }
             //  Delete from database all notes that are not within API models but are not new (have serverId)
-            dbDelete.addAll(dbNotes.filterNot { dbNote ->
-                apiNotes.any { apiNote -> apiNote.id == dbNote.serverId && dbNote.serverId >= 0 }
-            })
+            dbNotes.filterTo(dbDelete) { dbNote ->
+                apiNotes.none { apiNote -> apiNote.id == dbNote.serverId } && dbNote.serverId >= 0
+            }
             //  Update in database all notes that exist in API data and are not dirty (edited locally)
-            dbUpdate.addAll(dbNotes.filter { dbNote ->
-                apiNotes.any { apiNote -> apiNote.id == dbNote.serverId } && !dbNote.dirty
-            })
+            dbNotes.map {
+                dbNote ->
+                Pair(dbNote, apiNotes.firstOrNull { apiNote -> apiNote.id == dbNote.serverId })
+            }.filter {
+                !it.first.dirty && it.second != null
+            }.mapTo(dbUpdate) {
+                it.first.copy(text = it.second!!.title)
+            }
 
             //  POST all notes from local database that don't have server ID
-            apiInsert.addAll(dbNotes.filter { dbNote -> dbNote.serverId < 0 })
+            dbNotes.filterTo(apiInsert) { dbNote -> dbNote.serverId < 0 }
             //  Update all notes from local database that are found in API data and have dirty flag
-            apiUpdate.addAll(dbNotes.filter { dbNote ->
+            dbNotes.filterTo(apiUpdate) { dbNote ->
                 dbNote.dirty && apiNotes.any { apiNote -> apiNote.id == dbNote.serverId }
-            })
+            }
             //  Delete all notes that are marked in local database as deleted and have server ID
-            apiDelete.addAll(dbNotes.filter { dbNote -> dbNote.deleted && dbNote.serverId >= 0 })
+            dbNotes.filterTo(apiDelete) {
+                dbNote -> dbNote.deleted && dbNote.serverId >= 0 &&
+                apiNotes.any { apiNote -> apiNote.id == dbNote.serverId }
+            }
         }
 
         //  Update database and send API updates in IO thread
