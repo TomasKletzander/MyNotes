@@ -25,6 +25,7 @@ android {
 }
 
 apply from: '../dependencies.gradle'
+apply from: '../checkstyle.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

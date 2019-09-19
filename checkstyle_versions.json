@@ -1,0 +1,7 @@
+{
+  "ktlint": {
+    "version": "0.28.0",
+    "download": "https://github.com/shyiko/ktlint/releases/download/0.28.0/ktlint",
+    "sha256": "eb68d98cda98678d48e974780d7558af08e16ec28f159ada7077812fae21f959"
+  }
+}

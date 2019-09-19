@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import kotlin.coroutines.CoroutineContext
 
 @Module(includes = [AndroidInjectionModule::class])
 abstract class ApplicationModule {
@@ -23,8 +22,8 @@ abstract class ApplicationModule {
         @Provides
         @JvmStatic
         @Singleton
-        internal fun provideNotesDatabase(application: MyNotesApplication)
-            = Room.databaseBuilder(application, NotesDatabase::class.java, "Notes.db").build()
+        internal fun provideNotesDatabase(application: MyNotesApplication) =
+            Room.databaseBuilder(application, NotesDatabase::class.java, "Notes.db").build()
 
         @Provides
         @JvmStatic
@@ -38,8 +37,8 @@ abstract class ApplicationModule {
         @Provides
         @JvmStatic
         @Singleton
-        internal fun provideCoroutineContextProvider(): CoroutineContextProvider
-            = object : CoroutineContextProvider {
+        internal fun provideCoroutineContextProvider(): CoroutineContextProvider =
+            object : CoroutineContextProvider {
             override val Main = Dispatchers.Main
             override val IO = Dispatchers.IO
             override val Default = Dispatchers.Default

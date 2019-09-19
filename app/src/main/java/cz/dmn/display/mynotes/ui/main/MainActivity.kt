@@ -1,6 +1,5 @@
 package cz.dmn.display.mynotes.ui.main
 
-import android.animation.LayoutTransition
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
 import cz.dmn.display.mynotes.R
@@ -20,7 +18,6 @@ import cz.dmn.display.mynotes.db.NoteDbEntity
 import cz.dmn.display.mynotes.di.PerActivity
 import cz.dmn.display.mynotes.mvvm.NotesDataConverter
 import cz.dmn.display.mynotes.mvvm.NotesViewModel
-import cz.dmn.display.mynotes.mvvm.NotesViewModel.Status.*
 import cz.dmn.display.mynotes.navigator.Navigator
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
@@ -56,7 +53,8 @@ class MainActivity : BaseActivity(),
             @Provides
             @JvmStatic
             @PerActivity
-            internal fun provideLayoutInflater(activity: MainActivity) = LayoutInflater.from(activity)
+            internal fun provideLayoutInflater(activity: MainActivity) =
+                LayoutInflater.from(activity)
 
             @Provides
             @JvmStatic
@@ -65,7 +63,8 @@ class MainActivity : BaseActivity(),
         }
     }
 
-    class ViewModelFactory(private val viewModelProvider: Provider<NotesViewModel>) : ViewModelProvider.Factory {
+    class ViewModelFactory(private val viewModelProvider: Provider<NotesViewModel>)
+        : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
@@ -109,8 +108,8 @@ class MainActivity : BaseActivity(),
         })
         viewModel.status.observe(this, Observer<NotesViewModel.Status> {
             when (it) {
-                Success -> binding.swipeRefresh.isRefreshing = false
-                Error -> {
+                NotesViewModel.Status.Success -> binding.swipeRefresh.isRefreshing = false
+                NotesViewModel.Status.Error -> {
                     binding.swipeRefresh.isRefreshing = false
                     Snackbar.make(binding.root, R.string.sync_error, Snackbar.LENGTH_LONG).show()
                 }
@@ -128,7 +127,8 @@ class MainActivity : BaseActivity(),
                     if (data.getLongExtra(EXTRA_NOTE_ID, -1L) == -1L) {
                         insertNewNote(data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
                     } else {
-                        updateNote(data.getLongExtra(EXTRA_NOTE_ID, -1L), data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
+                        updateNote(data.getLongExtra(EXTRA_NOTE_ID, -1L),
+                            data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
                     }
                 }
             }

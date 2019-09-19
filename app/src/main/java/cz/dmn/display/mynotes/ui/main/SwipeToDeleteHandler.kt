@@ -1,7 +1,6 @@
 package cz.dmn.display.mynotes.ui.main
 
 import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -19,12 +18,18 @@ class SwipeToDeleteHandler @Inject constructor(
     private val activity: AppCompatActivity,
     private val viewModel: NotesViewModel,
     private val adapter: NotesAdapter
-) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+) : ItemTouchHelper.SimpleCallback(
+    0,
+    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+) {
 
-    private val icon = DrawableCompat.wrap(AppCompatResources.getDrawable(activity, R.drawable.trash_can)!!).also {
-        DrawableCompat.setTint(it, ResourcesCompat.getColor(activity.resources, R.color.colorAccent, activity.theme))
-    }
-    private val margin = 0//activity.resources.getDimensionPixelSize(R.dimen.margin_large)
+    private val icon = DrawableCompat.wrap(
+        AppCompatResources.getDrawable(activity, R.drawable.trash_can)!!).also {
+            DrawableCompat.setTint(
+                it,
+                ResourcesCompat.getColor(activity.resources, R.color.colorAccent, activity.theme)
+            )
+        }
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -51,9 +56,16 @@ class SwipeToDeleteHandler @Inject constructor(
     ) {
         Log.d("XXX", "Action state: $actionState")
         val itemView = viewHolder.itemView
-        val iconLeft = (if (dX > 0) itemView.left + margin + dX / 5 else if (dX < 0) itemView.right - icon.intrinsicWidth - margin + dX / 5 else return).toInt()
+        val iconLeft = (
+            if (dX > 0) {
+                itemView.left + dX / 5
+            } else if (dX < 0) {
+                itemView.right - icon.intrinsicWidth + dX / 5
+            } else return
+            ).toInt()
         val iconTop = (itemView.top + itemView.bottom - icon.intrinsicHeight) / 2
-        icon.setBounds(iconLeft, iconTop, iconLeft + icon.intrinsicWidth, iconTop + icon.intrinsicHeight)
+        icon.setBounds(iconLeft, iconTop, iconLeft + icon.intrinsicWidth,
+            iconTop + icon.intrinsicHeight)
         icon.draw(canvas)
         super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }

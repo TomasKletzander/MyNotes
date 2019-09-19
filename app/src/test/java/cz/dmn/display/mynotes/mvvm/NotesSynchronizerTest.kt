@@ -19,7 +19,8 @@ class NotesSynchronizerTest {
 
     @Before
     fun setUp() {
-        notesSynchronizer = NotesSynchronizer(api, database, notesDataConverter, TestCoroutineContextProvider())
+        notesSynchronizer = NotesSynchronizer(api, database, notesDataConverter,
+            TestCoroutineContextProvider())
     }
 
     @Test

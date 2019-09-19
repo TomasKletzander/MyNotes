@@ -1,0 +1,38 @@
+import groovy.json.JsonSlurper
+
+apply plugin: 'checkstyle'
+
+ext {
+    def jsonFile = file("${project.rootDir}/checkstyle_versions.json")
+    def parsedJson = new JsonSlurper().parseText(jsonFile.text)
+
+    ktlinVersion = parsedJson.ktlint.version
+}
+
+// Add checkstyle to the check task.
+check.dependsOn 'checkstyle'
+
+// setting up ktlint
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.github.shyiko:ktlint:$ktlinVersion"
+    // additional 3rd party ruleset(s) can be specified here
+    // just add them to the classpath (ktlint 'groupId:artifactId:version') and
+    // ktlint will pick them up
+}
+
+task ktlint(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "--android", "--reporter", "plain?group_by_file", "--relative", "src/**/*.kt"
+}
+
+check.dependsOn ktlint
+

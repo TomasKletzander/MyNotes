@@ -21,18 +21,19 @@ class NotesAdapter @Inject constructor(
 
     private val models = mutableListOf<NoteUiModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-        = NoteViewHolder(
-        ItemNoteBinding.inflate(
-            inflater,
-            recyclerLazy.get(),
-            false
-        )
-    ).apply {
-        binding.root.setOnClickListener { noteClickListener.onNoteClick(id) }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        NoteViewHolder(
+            ItemNoteBinding.inflate(
+                inflater,
+                recyclerLazy.get(),
+                false
+            )
+        ).apply {
+            binding.root.setOnClickListener { noteClickListener.onNoteClick(id) }
+        }
 
-    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) = holder.bind(models[position])
+    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) =
+        holder.bind(models[position])
 
     override fun getItemCount() = models.size
 
