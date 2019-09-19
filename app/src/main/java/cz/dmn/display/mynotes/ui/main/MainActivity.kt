@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
 import cz.dmn.display.mynotes.R
@@ -89,22 +88,23 @@ class MainActivity : BaseActivity(),
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
+        //  Prepare UI binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
         binding.notes.adapter = notesAdapter
         binding.notes.addItemDecoration(notesDecorator)
-        binding.fab.setOnClickListener { addNote() }
+        binding.fab.setOnClickListener { navigator.navigateToNote(REQUEST_NOTE) }
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.synchronize()
         }
         ItemTouchHelper(swipeToDeleteHandler).attachToRecyclerView(binding.notes)
 
-        viewModel = ViewModelProviders.of(this,
-            ViewModelFactory(viewModelProvider)
+        //  Attach to view model
+        viewModel = ViewModelProviders.of(
+            this, ViewModelFactory(viewModelProvider)
         ).get(NotesViewModel::class.java)
         viewModel.data.observe(this, Observer<List<NoteDbEntity>> {
             notesAdapter.updateModels(it.map { dbEntity -> notesDataConverter.toUiModel(dbEntity) })
-            notesAdapter.notifyDataSetChanged()
         })
         viewModel.status.observe(this, Observer<NotesViewModel.Status> {
             when (it) {
@@ -115,6 +115,8 @@ class MainActivity : BaseActivity(),
                 }
             }
         })
+
+        //  Trigger synchronization if just started
         if (savedInstanceState == null) {
             viewModel.synchronize()
         }
@@ -125,9 +127,9 @@ class MainActivity : BaseActivity(),
             REQUEST_NOTE -> {
                 if (resultCode == RESULT_OK && data != null) {
                     if (data.getLongExtra(EXTRA_NOTE_ID, -1L) == -1L) {
-                        insertNewNote(data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
+                        viewModel.addNote(data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
                     } else {
-                        updateNote(data.getLongExtra(EXTRA_NOTE_ID, -1L),
+                        viewModel.updateNote(data.getLongExtra(EXTRA_NOTE_ID, -1L),
                             data.getStringExtra(EXTRA_NOTE_TEXT) ?: "")
                     }
                 }
@@ -142,20 +144,6 @@ class MainActivity : BaseActivity(),
                     navigator.navigateToNote(REQUEST_NOTE, id = it.id, text = it.text)
                 }
             }
-        }
-    }
-
-    private fun addNote() {
-        navigator.navigateToNote(REQUEST_NOTE)
-    }
-
-    private fun insertNewNote(text: String) {
-        viewModel.addNote(text)
-    }
-
-    private fun updateNote(id: Long, text: String) {
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
-            viewModel.updateNote(id, text)
         }
     }
 }

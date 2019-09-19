@@ -42,6 +42,7 @@ class NotesAdapter @Inject constructor(
     fun updateModels(models: List<NoteUiModel>) {
         this.models.clear()
         this.models.addAll(models)
+        notifyDataSetChanged()
     }
 
     operator fun get(index: Int) = models[index]

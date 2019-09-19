@@ -1,7 +1,6 @@
 package cz.dmn.display.mynotes.ui.main
 
 import android.graphics.Canvas
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
@@ -36,7 +35,7 @@ class SwipeToDeleteHandler @Inject constructor(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return true
+        return false
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -54,7 +53,6 @@ class SwipeToDeleteHandler @Inject constructor(
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        Log.d("XXX", "Action state: $actionState")
         val itemView = viewHolder.itemView
         val iconLeft = (
             if (dX > 0) {
@@ -64,8 +62,8 @@ class SwipeToDeleteHandler @Inject constructor(
             } else return
             ).toInt()
         val iconTop = (itemView.top + itemView.bottom - icon.intrinsicHeight) / 2
-        icon.setBounds(iconLeft, iconTop, iconLeft + icon.intrinsicWidth,
-            iconTop + icon.intrinsicHeight)
+        icon.setBounds(iconLeft, iconTop,
+            iconLeft + icon.intrinsicWidth, iconTop + icon.intrinsicHeight)
         icon.draw(canvas)
         super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
