@@ -8,5 +8,6 @@ data class NoteDbEntity (
     @PrimaryKey(autoGenerate = true) val id: Long?,
     val serverId: Long,
     val text: String,
-    val dirty: Boolean = false
+    val dirty: Boolean = false,
+    val deleted: Boolean = false
 )

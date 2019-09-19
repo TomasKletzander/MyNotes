@@ -13,12 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.snackbar.Snackbar
 import cz.dmn.display.mynotes.R
 import cz.dmn.display.mynotes.databinding.ActivityMainBinding
 import cz.dmn.display.mynotes.db.NoteDbEntity
 import cz.dmn.display.mynotes.di.PerActivity
 import cz.dmn.display.mynotes.mvvm.NotesDataConverter
 import cz.dmn.display.mynotes.mvvm.NotesViewModel
+import cz.dmn.display.mynotes.mvvm.NotesViewModel.Status.*
 import cz.dmn.display.mynotes.navigator.Navigator
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_ID
 import cz.dmn.display.mynotes.navigator.Navigator.Companion.EXTRA_NOTE_TEXT
@@ -66,6 +68,7 @@ class MainActivity : BaseActivity(),
     class ViewModelFactory(private val viewModelProvider: Provider<NotesViewModel>) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
                 return viewModelProvider.get() as T
             } else {
                 throw RuntimeException()
@@ -106,8 +109,11 @@ class MainActivity : BaseActivity(),
         })
         viewModel.status.observe(this, Observer<NotesViewModel.Status> {
             when (it) {
-                NotesViewModel.Status.Loading -> binding.swipeRefresh.isRefreshing = true
-                else -> binding.swipeRefresh.isRefreshing = false
+                Success -> binding.swipeRefresh.isRefreshing = false
+                Error -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    Snackbar.make(binding.root, R.string.sync_error, Snackbar.LENGTH_LONG).show()
+                }
             }
         })
         if (savedInstanceState == null) {
