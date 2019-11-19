@@ -9,6 +9,11 @@ trigger:
 pool: "GINA Local Pool"
 
 steps:
+- task: CmdLine@2
+  displayName: "Downloading gradle wrapper"
+  inputs:
+    script: "gradle wrapper"
+
 - task: Gradle@2
   displayName: "Compiling debug version of application"
   inputs:
