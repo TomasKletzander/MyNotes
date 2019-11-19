@@ -6,8 +6,7 @@
 trigger:
 - test
 
-pool:
-  vmImage: 'macos-latest'
+pool: "GINA Local Pool"
 
 steps:
 - task: CmdLine@2
