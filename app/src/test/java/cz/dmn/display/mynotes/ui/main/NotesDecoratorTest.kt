@@ -51,7 +51,7 @@ class NotesDecoratorTest {
         outRect.left shouldEqual MARGIN
         outRect.top shouldEqual MARGIN
         outRect.right shouldEqual MARGIN
-        outRect.bottom shouldEqual 0
+        outRect.bottom shouldEqual MARGIN
 
         //  Last item should have offsets everywhere
         outRect.left = 0
