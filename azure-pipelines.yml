@@ -4,9 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 trigger:
-  branches:
-    include:
-    - "test"
+- test
 
 pool:
   vmImage: 'macos-latest'
