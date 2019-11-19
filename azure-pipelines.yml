@@ -10,6 +10,10 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: CmdLine@2
+  inputs:
+    script: "gradle wrapper"
+    
 - task: Gradle@2
   inputs:
     workingDirectory: ''
