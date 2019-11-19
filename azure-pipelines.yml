@@ -11,10 +11,12 @@ pool:
 
 steps:
 - task: CmdLine@2
+  name: "Downloading gradle wrapper"
   inputs:
     script: "gradle wrapper"
-    
+
 - task: Gradle@2
+  name: "Compiling debug version of application"
   inputs:
     workingDirectory: ''
     gradleWrapperFile: 'gradlew'
@@ -22,3 +24,13 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleDebug'
+
+- task: Gradle@2
+  name: "Running unit tests"
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'testDebug'
