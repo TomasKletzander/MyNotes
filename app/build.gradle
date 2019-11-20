@@ -22,6 +22,10 @@ android {
     dataBinding {
         enabled true
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 apply from: '../dependencies.gradle'
@@ -70,4 +74,12 @@ dependencies {
     testImplementation deps.mockitoKotlin
     testImplementation deps.coreArchTesting
     testImplementation deps.coroutinesTest
+
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation deps.junit
+    androidTestImplementation deps.androidTestRunner
+    androidTestImplementation deps.androidTestRules
+    androidTestImplementation deps.androidMockito
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
 }
