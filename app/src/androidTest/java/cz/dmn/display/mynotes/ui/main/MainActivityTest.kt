@@ -28,6 +28,6 @@ class MainActivityTest {
     @Test
     fun onNoteClick() {
         val activity = rule.activity
-        assert(activity is MainActivity)
+        assert(activity !is MainActivity)
     }
 }
