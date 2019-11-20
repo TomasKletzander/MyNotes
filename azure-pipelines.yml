@@ -1,0 +1,45 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+- test
+
+pool: "GINA Local Pool"
+
+steps:
+- task: CmdLine@2
+  displayName: "Downloading gradle wrapper"
+  inputs:
+    script: "gradle wrapper"
+
+- task: Gradle@2
+  displayName: "Compiling debug version of application"
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'assembleDebug'
+
+- task: Gradle@2
+  displayName: "Running unit tests"
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'testDebug'
+
+- task: Gradle@2
+  displayName: "Running UI tests"
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'connectedAndroidTest'
