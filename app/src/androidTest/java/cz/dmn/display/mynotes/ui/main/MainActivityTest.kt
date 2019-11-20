@@ -1,8 +1,11 @@
 package cz.dmn.display.mynotes.ui.main
 
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SmallTest
+import androidx.test.filters.MediumTest
 import androidx.test.rule.ActivityTestRule
+import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -10,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@SmallTest
+@MediumTest
 class MainActivityTest {
 
     @Rule
@@ -28,6 +31,6 @@ class MainActivityTest {
     @Test
     fun onNoteClick() {
         val activity = rule.activity
-        assert(activity !is MainActivity)
+        assertThat(activity, CoreMatchers.nullValue())
     }
 }
